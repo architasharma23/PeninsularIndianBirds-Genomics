@@ -1,0 +1,9 @@
+### for a huge sample size, adviced to run in nohup.
+### run it like this in bash:   nohup bash callablegenome.sh > callablegenome.out &
+
+TOTLEN=$(samtools depth \
+    -q 20 \
+    -Q 20 \
+    -f Path-to-bamlist | awk '$3>=3 && $3<=100 {n++} END{print n}')
+
+echo "$TOTLEN"
