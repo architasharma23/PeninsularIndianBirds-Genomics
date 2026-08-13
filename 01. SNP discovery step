@@ -1,6 +1,6 @@
 #!/bin/bash
 
-email="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+email="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ref="PATH TO THE REFERENCE TO WHICH YOU HAVE MAPPED YOUR RAW READS"
 outpath="OUTPUT PATH"
 
