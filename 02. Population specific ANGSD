@@ -1,5 +1,8 @@
 #### Note i wont repeat the descriptions for each flag in this script again.. its aldready mentioned in the previous bash script titled
 #### 01. SNP discovery. 
+##Run multiple iteration of this script for all your population.. no matter how many populations are there. 
+##It will use the .sites.txt file generated in the previous step and calculate the MAF for only those SNPs discovered in the previous step. 
+
 
 #!/bin/bash
 
