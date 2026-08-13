@@ -1,0 +1,33 @@
+#### Note i wont repeat the descriptions for each flag in this script again.. its aldready mentioned in the previous bash script titled
+#### 01. SNP discovery. 
+
+#!/bin/bash
+
+email="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+ref="ref"
+outpath="OUTPATH"
+
+mkdir -p "$outpath"
+
+bamlist="/media/birdlab/bird_hdd10/Archita/09_Dxy/BRF/bamlist_benghalense.txt"
+
+echo "Starting ANGSD at $(date)" | mail -s "ANGSD Started" "$email"
+
+# Run ANGSD
+angsd -GL 2 -doMajorMinor 1 -minInd 4 \
+    -doMaf 1 -skipTriallelic 1 \
+    -minMapQ 20 -minQ 20 \
+    -setMinDepth 2 -setMaxDepth 100 -uniqueOnly 1 \
+    -remove_bads 1 -only_proper_pairs 1 -C 50 -baq 1 \
+    -doCounts 1 --ignore-RG 0 \
+    -out "$outpath/benghalense_Angsd_GL" \
+    -sites "$outpath/BRF_sites.txt" \
+    -nThreads 8 \
+    -bam "$bamlist" \
+    -ref "$ref"
+
+echo "xxxxxxxxxx $(date)" | mail -s "xxxxxxxxxxxxxxxxx" "$email"
+
+gunzip -k "$outpath"/xxxxxxxxxxx.mafs.gz
+
+echo "all done, xxxxxxxxxxxxxxxxxx"
