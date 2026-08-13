@@ -1,0 +1,48 @@
+#!/bin/bash
+
+email="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+ref="PATH TO THE REFERENCE TO WHICH YOU HAVE MAPPED YOUR RAW READS"
+outpath="OUTPUT PATH"
+
+mkdir -p "$outpath"  ##CREATES A OUT DIRECTORY
+
+bamlist_ALL="/media/birdlab/bird_hdd10/Archita/09_Dxy/BRF/bamlist.txt"  #SHOULD CONTAIN THE FULL PATH TO YOUR .RI.bams if you have used indel realigner or 
+                                                                        #.rmdup.bam or .dedup.bam
+                                                                        #depending on PICARD or SAMTOOLS FIXMATE tool you have used to remove pcr duplicates. 
+echo "Starting ANGSD at $(date)" | mail -s "ANGSD Started" "$email"
+
+# Run ANGSD
+angsd \
+    -GL 1 \                      #specifies SAM-TOOLS model
+    -doMajorMinor 1 \             
+    -doMaf 1 \                    # calculates per-site allele frequencies assuming the major and minor alleles are known.
+    -skipTriallelic 1 \          #useful at 5x since you dont know if the triallelic loci are actual structural variant or mistakes in sequencing. 
+    -minMapQ 20 \                 #mapping quality >20 for a site to pass this filter
+    -minQ 20 \                    #phred score > 20
+    -SNP_pval 1e-6 \              #call SNP with a p value greater than 1e^ -6
+    -minMaf 0.05 \    
+    -minInd 3 \                  #minimum these many indiviudals should have the data.
+    -setMinDepth 3 \              #the data should be at this average depth
+    -setMaxDepth 100 \
+    -uniqueOnly 1 \                
+    -remove_bads 1 \              
+    -only_proper_pairs 1 \
+    -C 50 \  
+    -baq 1 \
+    -doCounts 1 \
+    --ignore-RG 0 \
+    -nThreads 20 \
+    -out "$outpath/xxxxx" \
+    -bam "$bamlist_ALL" \
+    -ref "$ref"
+    
+    
+echo "ALL SAF completed at $(date)" | mail -s "ALL SAF Completed" "$email"
+
+zcat "$outpath"/xxxx.mafs.gz | tail -n +2 | cut -f1,2 > "$outpath"/xxx_sites.txt
+
+angsd sites index "$outpath"/xxx_sites.txt
+
+echo "indexed and all_sites.txt created at $(date)" | mail -s "all completed" "$email"
+
+
