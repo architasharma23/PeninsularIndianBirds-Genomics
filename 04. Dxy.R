@@ -1,7 +1,7 @@
 #   Calculates Dxy from ANGSD 
 #   Modified from Joshua Penalba. https://github.com/mfumagalli/ngsPopGen/blob/master/scripts/calcDxy.R   
 # RUN THIS IN THIS MANNER !!
-###   Rscript DXY.R -p pop1.mafs -q pop2.mafs -t Callable-genome -o outpath
+###   Rscript DXY.R -p pop1.mafs -q pop2.mafs -t Callable-genome -o outpath 
 
 library(optparse)
 
