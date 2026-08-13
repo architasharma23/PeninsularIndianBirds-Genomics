@@ -1,4 +1,4 @@
-### for a huge sample size, adviced to run in nohup.
+### for a huge sample size, adviced to run in nohup...
 ### run it like this in bash:   nohup bash callablegenome.sh > callablegenome.out &
 
 TOTLEN=$(samtools depth \
