@@ -20,3 +20,45 @@ phyluce_assembly_get_fastas_from_match_counts \
     --output all-taxa-incomplete.fasta \
     --incomplete-matrix all-taxa-incomplete.incomplete \
     --log-path log
+
+phyluce_assembly_explode_get_fastas_file \
+    --input all-taxa-incomplete.fasta \
+    --output exploded-fastas \
+    --by-taxon
+
+# get summary stats on the FASTAS
+for i in exploded-fastas/*.fasta;
+do
+    phyluce_assembly_get_fasta_lengths --input $i --csv;
+done
+
+# align the data
+phyluce_align_seqcap_align \
+    --input all-taxa-incomplete.fasta \
+    --output mafft-nexus-edge-trimmed \
+    --taxa 4 \
+    --aligner mafft \
+    --cores 12 \
+    --incomplete-matrix \
+    --log-path log
+
+phyluce_align_remove_locus_name_from_files \
+    --alignments mafft-nexus-edge-trimmed \
+    --output mafft-nexus-edge-trimmed-clean \
+    --cores 12 \
+    --log-path log
+
+phyluce_align_get_only_loci_with_min_taxa \
+    --alignments mafft-nexus-edge-trimmed-clean \
+    --taxa 12 \
+    --percent 0.75 \
+    --output mafft-nexus-edge-trimmed-clean-75p \
+    --cores 12 \
+    --log-path log
+
+phyluce_align_concatenate_alignments \
+    --alignments mafft-nexus-edge-trimmed-clean-75p \
+    --output mafft-nexus-edge-trimmed-clean-75p-raxml \
+    --phylip \
+    --log-path log
+
