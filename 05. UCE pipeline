@@ -1,1 +1,22 @@
+# example pipleline with one species  - PS (Purple Sunbird)
+phyluce_assembly_match_contigs_to_probes \
+    --contigs 06_contigs_by_species/PS \
+    --probes uce-5k-probes.fasta \
+    --output 06_contigs_by_species/PS/07_uce_search_results
 
+repeated for RT, RVB, ZOPA, PYJO, BTM, GRTD
+
+phyluce_assembly_get_match_counts \
+    --locus-db 07_uce_search_results/probe.matches.sqlite \
+    --taxon-list-config taxon-set.conf \
+    --taxon-group all \
+    --incomplete-matrix \
+    --output taxon_sets/all/all-taxa-incomplete.conf
+
+phyluce_assembly_get_fastas_from_match_counts \
+    --contigs ../../ \
+    --locus-db ../../07_uce_search_results/probe.matches.sqlite \
+    --match-count-output all-taxa-incomplete.conf \
+    --output all-taxa-incomplete.fasta \
+    --incomplete-matrix all-taxa-incomplete.incomplete \
+    --log-path log
