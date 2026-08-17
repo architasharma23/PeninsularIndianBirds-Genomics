@@ -1,3 +1,5 @@
+conda activate phyluce-1.7.3
+
 # example pipleline with one species  - PS (Purple Sunbird)
 phyluce_assembly_match_contigs_to_probes \
     --contigs 06_contigs_by_species/PS \
@@ -6,12 +8,35 @@ phyluce_assembly_match_contigs_to_probes \
 
 repeated for RT, RVB, ZOPA, PYJO, BTM, GRTD
 
+#how to create taxon-set.conf > do ls to get list of files > then do this - for example
+cat > taxon-set.conf <<'EOF'
+[all]
+C_a_asiaticus_PS_LAMASINGHI2018
+C_a_asiaticus_Z0033
+C_a_asiaticus_Z4615
+C_a_asiaticus_Z4636
+C_a_asiaticus_Z4828
+C_a_asiaticus_Z4900
+C_a_asiaticus_Z7612
+C_a_asiaticus_Z7972
+C_a_intermedius_Z7522
+C_a_intermedius_Z7796
+C_regius_SRR13069960
+C_unknown_PS_LAMASINGHI2022
+EOFcd
+
+#make the directory to run next steps
+mkdir - p taxon_sets/all/
+
 phyluce_assembly_get_match_counts \
     --locus-db 07_uce_search_results/probe.matches.sqlite \
     --taxon-list-config taxon-set.conf \
     --taxon-group all \
     --incomplete-matrix \
     --output taxon_sets/all/all-taxa-incomplete.conf
+
+cd taxon_sets/all/
+mkdir log
 
 phyluce_assembly_get_fastas_from_match_counts \
     --contigs ../../ \
@@ -32,7 +57,7 @@ do
     phyluce_assembly_get_fasta_lengths --input $i --csv;
 done
 
-# align the data
+# align the data - edit the taxa count
 phyluce_align_seqcap_align \
     --input all-taxa-incomplete.fasta \
     --output mafft-nexus-edge-trimmed \
@@ -61,4 +86,24 @@ phyluce_align_concatenate_alignments \
     --output mafft-nexus-edge-trimmed-clean-75p-raxml \
     --phylip \
     --log-path log
+
+#when you are inside the phylip direc - for example - PS/taxon_sets/all/mafft-nexus-edge-trimmed-clean-75p-raxml/
+nohup iqtree2 \
+    -s mafft-nexus-edge-trimmed-clean-75p-raxml.phylip \
+    -m MFP \
+    -B 1000 \
+    --alrt 1000 \
+    -T 8 \
+    --prefix ../../../../iqtree_results/PS_unpartitioned \
+    > ../../../../iqtree_results/PS_unpartitioned_nohup.log 2>&1 &
+
+nohup iqtree2 \
+    -s mafft-nexus-edge-trimmed-clean-75p-raxml.phylip \
+    -p mafft-nexus-edge-trimmed-clean-75p-raxml.charsets \
+    -m MFP+MERGE \
+    -B 1000 \
+    --alrt 1000 \
+    -T 8 \
+    --prefix ../../../../iqtree_results/PS_partitioned \
+    > ../../../../iqtree_results/PS_partitioned_nohup.log 2>&1 &
 
