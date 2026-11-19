@@ -1,0 +1,1 @@
+pcangsd -b ../GRTD_10ind_Angsd_GL_thinned_10kb.beagle.gz -o GRTD_10ind_Angsd_GL_thinned_10kb -t 20
